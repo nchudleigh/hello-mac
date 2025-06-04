@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mac App Downloads</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f5f5f7;
+    color: #1d1d1f;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    font-weight: 600;
+  }
+  .search {
+    margin-bottom: 20px;
+  }
+  .app-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+  }
+  .app-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .app-item img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+  }
+  .app-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 5px;
+  }
+  a {
+    color: #0066cc;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+<h1>Mac App Downloads</h1>
+<input class="search" type="text" id="search" placeholder="Search apps" aria-label="Search apps">
+<ul class="app-list" id="appList"></ul>
+<script>
+  const appFolders = [
+    "1password",
+    "alcove",
+    "amie",
+    "arc_browser",
+    "chatgpt",
+    "cleanshot_x",
+    "cursor",
+    "daylight_desktop",
+    "developer_(apple)",
+    "discord",
+    "focusrite_control_2",
+    "ghostty",
+    "github_desktop",
+    "homerow",
+    "klack",
+    "linear",
+    "raycast",
+    "rectangle",
+    "sf_symbols",
+    "slack",
+    "superhuman",
+    "superwhisper",
+    "telegram",
+    "testflight",
+    "xcode",
+    "yubico_authenticator",
+    "zoom",
+  ];
+
+  function loadApps() {
+    const promises = appFolders.map(folder => fetch(`apps/${folder}/config.json`).then(r => r.json().then(data => ({...data, folder}))));
+    Promise.all(promises).then(apps => {
+      apps.sort((a, b) => a.name.localeCompare(b.name));
+      const list = document.getElementById('appList');
+      list.innerHTML = '';
+      const query = document.getElementById('search').value.toLowerCase();
+      apps.filter(app => app.name.toLowerCase().includes(query)).forEach(app => {
+        const li = document.createElement('li');
+        li.className = 'app-item';
+        const img = document.createElement('img');
+        img.src = `apps/${app.folder}/icon.svg`;
+        img.alt = `${app.name} icon`;
+        const link = document.createElement('a');
+        link.href = app.link;
+        link.textContent = app.name;
+        link.target = "_blank";
+        link.className = 'app-name';
+        li.appendChild(img);
+        li.appendChild(link);
+        list.appendChild(li);
+      });
+    });
+  }
+
+  document.getElementById('search').addEventListener('input', loadApps);
+  loadApps();
+</script>
+</body>
+</html>
