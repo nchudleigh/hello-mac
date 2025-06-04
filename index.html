@@ -14,7 +14,7 @@
     padding: 0;
   }
   .container {
-    max-width: 600px;
+    max-width: 900px;
     margin: 80px auto;
     padding: 0 20px;
   }
@@ -35,25 +35,54 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 20px;
   }
   .app-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #d2d2d7;
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #d2d2d7;
+    border-radius: 12px;
+    cursor: pointer;
   }
   .app-item img {
-    width: 50px;
-    height: 50px;
-    margin-right: 15px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 10px;
     border-radius: 12px;
   }
   .app-name {
-    font-size: 18px;
+    font-size: 16px;
   }
   a {
     color: #0066cc;
     text-decoration: none;
+  }
+  /* Panel overlay */
+  #app-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+  }
+  #app-panel.hidden {
+    display: none;
+  }
+  #app-panel-content {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    text-align: center;
   }
   /* Hello animation overlay */
   #hello-overlay {
@@ -100,6 +129,9 @@
   <input class="search" type="text" id="search" placeholder="Search apps" aria-label="Search apps">
   <ul class="app-list" id="appList"></ul>
 </div>
+<div id="app-panel" class="hidden">
+  <div id="app-panel-content"></div>
+</div>
 <script>
   const appFolders = [
     "1password",
@@ -144,15 +176,26 @@
         const img = document.createElement('img');
         img.src = `apps/${app.folder}/icon.svg`;
         img.alt = `${app.name} icon`;
-        const link = document.createElement('a');
-        link.href = app.link;
-        link.textContent = app.name;
-        link.className = 'app-name';
+        const span = document.createElement('span');
+        span.textContent = app.name;
+        span.className = 'app-name';
         li.appendChild(img);
-        li.appendChild(link);
+        li.appendChild(span);
+        li.addEventListener('click', () => {
+          showPanel(app);
+          window.open(app.link, '_blank');
+        });
         list.appendChild(li);
       });
     });
+  }
+
+  function showPanel(app) {
+    const panel = document.getElementById('app-panel');
+    const content = document.getElementById('app-panel-content');
+    content.innerHTML = `<h2>${app.name}</h2><p>Opening download page...</p>`;
+    panel.classList.remove('hidden');
+    setTimeout(() => panel.classList.add('hidden'), 2000);
   }
 
   document.getElementById('search').addEventListener('input', loadApps);
