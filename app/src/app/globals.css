@@ -1,0 +1,54 @@
+@import "tailwindcss/preflight";
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@layer base {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f5f5f7; /* Off-white similar to macOS interfaces */
+    color: #1d1d1f; /* Standard dark gray text color */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Styles for the "hello" SVG animation */
+.hello-text-animation {
+  font-family: 'Snell Roundhand', 'Brush Script MT', cursive; /* Fallback to cursive */
+  font-size: 72px; /* Or adjust as needed, can also be set via Tailwind on the element */
+  fill: none;
+  stroke: #000; /* Or use a Tailwind color like stroke-black */
+  stroke-width: 2;
+  stroke-linecap: round;
+  /* stroke-dasharray and stroke-dashoffset will be set dynamically via JavaScript */
+  /* animation will be applied dynamically via JavaScript or as a utility */
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Example of how to make the animation a utility class if preferred */
+.animate-dash {
+  animation: dash 4s ease forwards;
+}
